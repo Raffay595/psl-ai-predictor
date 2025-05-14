@@ -1,9 +1,11 @@
 import streamlit as st
-import os
 from openai import OpenAI
+import os
 
-# Load API key securely
+# Load the API key from Streamlit secrets or environment variable
 api_key = st.secrets["openai_api_key"] if "openai_api_key" in st.secrets else os.getenv("OPENAI_API_KEY")
+
+# Create the OpenAI client (correct SDK usage)
 client = OpenAI(api_key=api_key)
 
 # PSL team data
@@ -18,15 +20,14 @@ psl_teams = [
 
 # GPT interaction function
 def ask_gpt(prompt):
-    response = client.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a professional PSL cricket analyst."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.7
-    )
-    return response.choices[0].message.content.strip()
+   response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "user", "content": prompt}
+    ],
+    temperature=0.7
+)
+return response.choices[0].message.content.strip()
 
 # Generate score prediction
 def predict_scores(team1, team2):
